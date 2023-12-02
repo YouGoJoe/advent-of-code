@@ -40,9 +40,25 @@ const checkGame = (game) => {
 
 // break up input into games
 const games = input.split("\n");
-const result = games.reduce(
-  (prev, game) => prev + checkGame(parseGame(game)),
-  0
-);
 
-console.log(result)
+const partOne = () =>
+  games.reduce((prev, game) => prev + checkGame(parseGame(game)), 0);
+
+const minCubes = (game) =>
+  game.rounds.reduce(
+    (prev, round) => {
+      if (round.red && round.red > prev.red) prev.red = round.red;
+      if (round.green && round.green > prev.green) prev.green = round.green;
+      if (round.blue && round.blue > prev.blue) prev.blue = round.blue;
+      return prev;
+    },
+    { red: 1, green: 1, blue: 1 }
+  );
+
+const partTwo = () =>
+  games.reduce((prev, game) => {
+    const { red, blue, green } = minCubes(parseGame(game));
+    return prev + red * blue * green;
+  }, 0);
+
+console.log(partTwo());
