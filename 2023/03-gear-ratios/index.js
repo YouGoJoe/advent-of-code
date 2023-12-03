@@ -167,7 +167,6 @@ const result = maybeGears.reduce((prev, gearRow) => {
     return gearNums;
   });
 
-  console.log(maybeGearNums)
   if (maybeGearNums.length !== 2) {
     return prev;
   }
