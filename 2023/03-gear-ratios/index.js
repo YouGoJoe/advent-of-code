@@ -1,5 +1,15 @@
-const input = require("./input.js");
+// const input = require("./input.js");
 
+const input = `467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..`
 // break up the schematic into a 2d array
 const twoDArray = input.split("\n").map((row) => row.split(""));
 
@@ -59,5 +69,110 @@ const partOne = () => {
   );
 };
 
+// part two
 
-console.log(partOne())
+const maybeGears = input.split("\n").map((row, rowNum) =>
+  [...row.matchAll(/\*/g)].map((result) => ({
+    index: result.index,
+    value: result[0],
+    rowNum,
+  }))
+);
+
+const allNumbers = twoDNumbers.reduce((prev, curr) => [...prev, ...curr], []);
+const numbersRegex = new RegExp(/([0-9])/);
+
+const result = maybeGears.reduce((prev, gearRow) => {
+  if (!gearRow.length) return prev;
+
+  const [maybeGearNums] = gearRow.map(({ index, rowNum }) => {
+    const gearNums = [];
+    // check row above for numbers
+    if (twoDArray[rowNum - 1]) {
+      const northnum = allNumbers.find(
+        (number) => number.rowNum === rowNum - 1 && number.index === index
+      );
+      if (northnum) {
+        gearNums.push(northnum.value);
+      }
+      const nenum = allNumbers.find(
+        (number) => number.rowNum === rowNum - 1 && number.index === index + 1
+      );
+      if (nenum) {
+        gearNums.push(nenum.value);
+      }
+
+      // northwest - annoying. might be in the middle of a num
+      if (twoDArray[rowNum - 1][index - 1].match(numbersRegex)) {
+        let idxCheck = index - 1;
+        let found;
+        do {
+          found = allNumbers.find(
+            (number) =>
+              number.rowNum === rowNum - 1 && number.index === idxCheck
+          );
+          idxCheck--;
+        } while (!found);
+        gearNums.push(found.value);
+      }
+    }
+    // check row below for numbers
+    if (twoDArray[rowNum + 1]) {
+      const southnum = allNumbers.find(
+        (number) => number.rowNum === rowNum + 1 && number.index === index
+      );
+      if (southnum) {
+        gearNums.push(southnum.value);
+      }
+      const senum = allNumbers.find(
+        (number) => number.rowNum === rowNum + 1 && number.index === index + 1
+      );
+      if (senum) {
+        gearNums.push(senum.value);
+      }
+      // southwest - annoying. might be in the middle of a num
+      if (twoDArray[rowNum + 1][index - 1].match(numbersRegex)) {
+        let idxCheck = index - 1;
+        let found;
+        do {
+          found = allNumbers.find(
+            (number) =>
+              number.rowNum === rowNum + 1 && number.index === idxCheck
+          );
+          idxCheck--;
+        } while (!found);
+        gearNums.push(found.value);
+      }
+    }
+    // check left and right for numbers
+    const west = twoDArray[rowNum][index - 1];
+    const east = twoDArray[rowNum][index + 1];
+    if (west.match(numbersRegex)) {
+      gearNums.push(
+        allNumbers.find(
+          (number) =>
+            number.rowNum === rowNum &&
+            number.index === index - number.value.length
+        ).value
+      );
+    }
+    if (east.match(numbersRegex)) {
+      gearNums.push(
+        allNumbers.find(
+          (number) => number.rowNum === rowNum && number.index === index + 1
+        ).value
+      );
+    }
+
+    return gearNums;
+  });
+
+  console.log(maybeGearNums)
+  if (maybeGearNums.length !== 2) {
+    return prev;
+  }
+
+  return prev + Number(maybeGearNums[0]) * Number(maybeGearNums[1]);
+}, 0);
+
+console.log(result);
