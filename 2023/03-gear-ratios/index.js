@@ -1,15 +1,15 @@
-// const input = require("./input.js");
+const input = require("./input.js");
 
-const input = `467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..`
+// const input = `467..114..
+// ...*......
+// ..35..633.
+// ......#...
+// 617*......
+// .....+.58.
+// ..592.....
+// ....755...
+// ...$.*....
+// .664.598..`
 // break up the schematic into a 2d array
 const twoDArray = input.split("\n").map((row) => row.split(""));
 
@@ -82,10 +82,10 @@ const maybeGears = input.split("\n").map((row, rowNum) =>
 const allNumbers = twoDNumbers.reduce((prev, curr) => [...prev, ...curr], []);
 const numbersRegex = new RegExp(/([0-9])/);
 
-const result = maybeGears.reduce((prev, gearRow) => {
-  if (!gearRow.length) return prev;
+const allGearRows = maybeGears.map((gearRow) => {
+  if (!gearRow.length) return [];
 
-  const [maybeGearNums] = gearRow.map(({ index, rowNum }) => {
+  return gearRow.map(({ index, rowNum }) => {
     const gearNums = [];
     // check row above for numbers
     if (twoDArray[rowNum - 1]) {
@@ -166,12 +166,18 @@ const result = maybeGears.reduce((prev, gearRow) => {
 
     return gearNums;
   });
+});
 
-  if (maybeGearNums.length !== 2) {
-    return prev;
-  }
+const result = allGearRows.reduce((prev, curr) => {
+  if (!curr.length) return prev;
 
-  return prev + Number(maybeGearNums[0]) * Number(maybeGearNums[1]);
+  const rowTotal = curr.reduce((rowPrev, rowCurr) => {
+    if (rowCurr.length !== 2) return rowPrev;
+
+    return rowPrev + Number(rowCurr[0]) * Number(rowCurr[1]);
+  }, 0);
+
+  return prev + rowTotal;
 }, 0);
 
 console.log(result);
