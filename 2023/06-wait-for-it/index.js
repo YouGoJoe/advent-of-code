@@ -8,20 +8,8 @@
 
 const races = [
   {
-    time: 46,
-    record: 347,
-  },
-  {
-    time: 82,
-    record: 1522,
-  },
-  {
-    time: 84,
-    record: 1406,
-  },
-  {
-    time: 79,
-    record: 1471,
+    time: 46828479,
+    record: 347152214061471,
   },
 ];
 
