@@ -16,7 +16,6 @@ const parseMapping = (string) =>
       return { destStart, sourceStart, length };
     });
 
-const seeds = parseInitialSeeds(seedString);
 const mappers = mappersStrings.map(parseMapping);
 
 const mapPipe = (source, mapper) => {
@@ -32,9 +31,12 @@ const mapPipe = (source, mapper) => {
   return source;
 };
 
-const result = seeds.map((seed) =>
-  mappers.reduce((prev, curr) => mapPipe(prev, curr), seed)
-);
+const partOne = () => {
+  const result = parseInitialSeeds(seedString).map((seed) =>
+    mappers.reduce((prev, curr) => mapPipe(prev, curr), seed)
+  );
 
-console.log(sortBy(result));
-// console.log(mapPipe(seeds[3], mappers[0]));
+  console.log(sortBy(result));
+};
+
+partOne()
