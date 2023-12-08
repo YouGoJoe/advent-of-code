@@ -1,4 +1,4 @@
-const { sortBy } = require("lodash");
+const { sortBy, chunk, flatten } = require("lodash");
 const input = require("./input");
 
 const [seedString, ...mappersStrings] = input.split("\n\n");
@@ -39,4 +39,20 @@ const partOne = () => {
   console.log(sortBy(result));
 };
 
-partOne()
+// Heap error
+const partTwo = () => {
+  // turn into pairs of seeds of [start, length] and produce all seeds
+  const seeds = chunk(seedString.split(": ")[1].split(" ").map(Number), 2).map(
+    ([start, length]) =>
+      new Array(length).fill().map((_, index) => start + index)
+  );
+
+  const result = seeds[0].map((seed) =>
+    mappers.reduce((prev, curr) => mapPipe(prev, curr), seed)
+  );
+
+  console.log(sortBy(result)[0]);
+};
+
+partTwo();
+
