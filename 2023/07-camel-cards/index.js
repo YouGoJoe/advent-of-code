@@ -1,5 +1,12 @@
 const { countBy, isEqual } = require("lodash");
-const input = require("./input");
+const bigInput = require("./input");
+
+const input = `32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483
+JJJJJ 65`;
 
 const FIVEOAK = 7;
 const FOUROAK = 6;
@@ -9,9 +16,27 @@ const TWOPAIR = 3;
 const ONEPAIR = 2;
 const HIGHCARD = 1;
 
+const partOneCardCount = (cards) =>
+  Object.values(countBy(cards)).sort().reverse();
+
+const partTwoCardCount = (cards) => {
+  const cardsByCount = countBy(cards);
+  const jokersCount = cardsByCount["J"];
+  if (!jokersCount) {
+    return partOneCardCount(cards);
+  }
+  delete cardsByCount["J"];
+  const cardsCounts = Object.values(cardsByCount).sort().reverse();
+  cardsCounts[0] = cardsCounts[0] ? cardsCounts[0] + jokersCount : jokersCount;
+
+  console.log(cards);
+  console.log(cardsCounts);
+  return cardsCounts;
+};
+
 const getType = (hand) => {
   const cards = hand.split("");
-  const cardCounts = Object.values(countBy(cards)).sort().reverse();
+  const cardCounts = partTwoCardCount(cards);
   if (cardCounts.includes(5)) return FIVEOAK;
   if (cardCounts.includes(4)) return FOUROAK;
   if (isEqual(cardCounts, [3, 2])) return FH;
@@ -22,11 +47,12 @@ const getType = (hand) => {
   return HIGHCARD;
 };
 
-const parsedInput = input.split("\n").map((row) => ({
-  hand: row.split(" ")[0],
-  bid: Number(row.split(" ")[1]),
-  typePower: getType(row.split(" ")[0]),
-}));
+const parseInput = (input) =>
+  input.split("\n").map((row) => ({
+    hand: row.split(" ")[0],
+    bid: Number(row.split(" ")[1]),
+    typePower: getType(row.split(" ")[0]),
+  }));
 
 const handToValues = ({ hand }) =>
   hand.split("").map((card) => {
@@ -34,7 +60,7 @@ const handToValues = ({ hand }) =>
       return Number(card);
     }
     // A, K, Q, J, T
-    return { T: 10, J: 11, Q: 12, K: 13, A: 14 }[card];
+    return { T: 10, J: 1, Q: 12, K: 13, A: 14 }[card];
   });
 
 // -1 if first argument is less than second, 0 for tie, +1 for first greater than second
@@ -55,8 +81,13 @@ const compareHands = (hand0, hand1) => {
   return typePowerDiff;
 };
 
+// console.log(
+//   parseInput(input).sort(compareHands)
+//   .reduce((prev, curr, index) => prev + curr.bid * (index + 1), 0)
+// );
+
 console.log(
-  parsedInput
+  parseInput(bigInput)
     .sort(compareHands)
     .reduce((prev, curr, index) => prev + curr.bid * (index + 1), 0)
 );
