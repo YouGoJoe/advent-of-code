@@ -11,7 +11,7 @@ const diffSteps = (steps) => {
   const prevRow = steps[steps.length - 1];
   if (prevRow.every((val) => val === 0)) {
     // push the extra 0 to help with the summation step
-    prevRow.push(0);
+    prevRow.unshift(0);
     return steps;
   }
   const nextRow = [];
@@ -33,10 +33,25 @@ const incrementSteps = (diffedSteps) => {
   return diffedSteps;
 };
 
+const decrementSteps = (diffedSteps) => {
+  for (let i = 0; i < diffedSteps.length - 1; i++) {
+    const prevRow = diffedSteps[i];
+    const workingRow = diffedSteps[i + 1];
+    workingRow.unshift(workingRow[0] - prevRow[0]);
+  }
+  return diffedSteps;
+};
+
 const partOne = (input) =>
   parseInput(input)
     .map((row) => incrementSteps(diffSteps([row]).reverse()))
     .reduce((prev, curr) => prev + curr.pop().pop(), 0);
 
-// console.log(partOne(input));
-console.log(partOne(bigInput));
+const partTwo = (input) =>
+  parseInput(input)
+    .map((row) => decrementSteps(diffSteps([row]).reverse()))
+    .reduce((prev, curr) => prev + curr.pop()[0], 0);
+
+// console.log(partTwo(input));
+console.log(partTwo(bigInput));
+
