@@ -232,25 +232,21 @@ const partTwo = (input) => {
         if (elem === ".") {
           insideOutsideRow.push({
             elem: "O",
-            outside: [0, 1, 2, 3, 4, 5, 6, 7],
             inside: [],
           });
         } else if (elem === "F") {
           insideOutsideRow.push({
             elem: "F",
-            outside: [0, 1, 5, 6, 7],
             inside: [3],
           });
         } else if (elem === "-") {
           insideOutsideRow.push({
             elem: "-",
-            outside: [0, 1, 7],
             inside: [3, 4, 5],
           });
         } else if (elem === "7") {
           insideOutsideRow.push({
             elem: "7",
-            outside: [0, 1, 2, 3, 5, 7],
             inside: [5],
           });
         }
@@ -260,14 +256,12 @@ const partTwo = (input) => {
           if (!westElem) {
             insideOutsideRow.push({
               elem: "|",
-              outside: [5, 6, 7],
               inside: [1, 2, 3],
             });
           } else {
             const leftInside = westElem.inside.includes(2);
             insideOutsideRow.push({
               elem: "|",
-              outside: leftInside ? [1, 2, 3] : [5, 6, 7],
               inside: leftInside ? [5, 6, 7] : [1, 2, 3],
             });
           }
@@ -276,7 +270,6 @@ const partTwo = (input) => {
           const isInside = northElem.inside.includes(4);
           insideOutsideRow.push({
             elem: "-",
-            outside: isInside ? [3, 4, 5] : [0, 1, 7],
             inside: isInside ? [0, 1, 7] : [3, 4, 5],
           });
         } else if (elem === "L") {
@@ -284,14 +277,12 @@ const partTwo = (input) => {
           if (!westElem) {
             insideOutsideRow.push({
               elem: "L",
-              outside: [3, 4, 5, 6, 7],
               inside: [1],
             });
           } else {
             const isInside = westElem.inside.includes(2);
             insideOutsideRow.push({
               elem: "L",
-              outside: isInside ? [1] : [3, 4, 5, 6, 7],
               inside: isInside ? [3, 4, 5, 6, 7] : [1],
             });
           }
@@ -300,14 +291,12 @@ const partTwo = (input) => {
           if (!westElem) {
             insideOutsideRow.push({
               elem: "F",
-              outside: [0, 1, 5, 6, 7],
               inside: [3],
             });
           } else {
             const isInside = westElem.inside.includes(2);
             insideOutsideRow.push({
               elem: "F",
-              outside: isInside ? [3] : [0, 1, 5, 6, 7],
               inside: isInside ? [0, 1, 5, 6, 7] : [3],
             });
           }
@@ -316,7 +305,6 @@ const partTwo = (input) => {
           const topLeftIsInside = westElem.inside.includes(1);
           insideOutsideRow.push({
             elem: "J",
-            outside: topLeftIsInside ? [1, 2, 3, 4, 5] : [7],
             inside: topLeftIsInside ? [7] : [1, 2, 3, 4, 5],
           });
         } else if (elem === "7") {
@@ -324,7 +312,6 @@ const partTwo = (input) => {
           const bottomLeftIsInside = westElem.inside.includes(3);
           insideOutsideRow.push({
             elem: "7",
-            outside: bottomLeftIsInside ? [0, 1, 2, 3, 7] : [5],
             inside: bottomLeftIsInside ? [5] : [0, 1, 2, 3, 7],
           });
         } else if (elem === ".") {
@@ -332,14 +319,12 @@ const partTwo = (input) => {
           if (!westElem) {
             insideOutsideRow.push({
               elem: "O",
-              outside: [0, 1, 2, 3, 4, 5, 6, 7],
               inside: [],
             });
           } else {
             const leftIsInside = westElem.inside.includes(2);
             insideOutsideRow.push({
               elem: leftIsInside ? "I" : "O",
-              outside: leftIsInside ? [] : [0, 1, 2, 3, 4, 5, 6, 7],
               inside: leftIsInside ? [0, 1, 2, 3, 4, 5, 6, 7] : [],
             });
           }
@@ -348,7 +333,7 @@ const partTwo = (input) => {
     });
     insideOutside.push(insideOutsideRow);
   });
-  // console.log(insideOutside.map((row) => row.map(({ elem }) => elem).join("")))
+
   return insideOutside.reduce(
     (prev, row) =>
       prev +
@@ -362,6 +347,4 @@ const partTwo = (input) => {
   );
 };
 
-// console.log(partTwo(input));
-// console.log(partTwo(input4));
 console.log(partTwo(bigInput));
