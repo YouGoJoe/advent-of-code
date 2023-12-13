@@ -65,5 +65,25 @@ const partOne = (input) => {
   return rows.map((row) => parseRow(row).length);
 };
 
-// console.log(partOne(input0).reduce((prev, curr) => prev + curr, 0));
-console.log(partOne(bigInput).reduce((prev, curr) => prev + curr, 0));
+const partTwo = (input) => {
+  const rows = input.split("\n");
+
+  return rows.map((row) => {
+    const [schemaOld, numsOld] = row.split(" ");
+    const schema = new Array(5).fill(schemaOld).join('?')
+    const nums = new Array(5).fill(numsOld).join(',')
+    const numQuestionMarks = schema
+      .split("")
+      .filter((value) => value === "?").length;
+
+    const validated = validator(
+      applyMapping(getMapping(numQuestionMarks), schema),
+      nums
+    );
+
+    return validated;
+  });
+};
+
+console.log(partTwo(input0).reduce((prev, curr) => prev.length + curr, 0));
+// console.log(partOne(bigInput).reduce((prev, curr) => prev + curr, 0));
