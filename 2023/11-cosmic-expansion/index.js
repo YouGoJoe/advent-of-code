@@ -75,4 +75,65 @@ const partOne = (input) => {
   return galaxyDiffs.reduce((prev, curr) => prev + curr, 0);
 };
 
-console.log(partOne(bigInput));
+const getExpansionPoints = (universe) => {
+  // columnar expansion
+  const columnsToExpand = [];
+  for (let i = 0; i < universe[0].length; i++) {
+    if (universe.every((row) => row[i] === ".")) {
+      columnsToExpand.push(i);
+    }
+  }
+
+  // row expansion
+  const rowsToExpand = [];
+  universe.forEach((row, index) => {
+    if (row.every((elem) => elem === ".")) {
+      rowsToExpand.push(index);
+    }
+  });
+
+  return {
+    rowsToExpand,
+    columnsToExpand,
+  };
+};
+
+const partTwo = (input) => {
+  const twoDArray = input.split("\n").map((row) => row.split(""));
+  const { columnsToExpand, rowsToExpand } = getExpansionPoints(twoDArray);
+  const galaxies = getGalaxies(twoDArray);
+
+  // Off-by-one errors
+  let expansionCoefficient = 1000000 - 1;
+  const galaxyDiffs = [];
+  galaxies.forEach((galaxyA, index) => {
+    for (let i = index + 1; i < galaxies.length; i++) {
+      const galaxyB = galaxies[i];
+      const rowExpansion = rowsToExpand.filter(
+        (rowNum) =>
+          (galaxyA.rowNum < rowNum && rowNum < galaxyB.rowNum) ||
+          (galaxyB.rowNum < rowNum && rowNum < galaxyA.rowNum)
+      );
+
+      const colExpansion = columnsToExpand.filter(
+        (colNum) =>
+          (galaxyA.index < colNum && colNum < galaxyB.index) ||
+          (galaxyB.index < colNum && colNum < galaxyA.index)
+      );
+
+      const colExp = colExpansion.length * expansionCoefficient;
+      const rowExp = rowExpansion.length * expansionCoefficient;
+      const diff =
+        Math.abs(galaxyB.index - galaxyA.index) +
+        Math.abs(galaxyB.rowNum - galaxyA.rowNum) +
+        colExp +
+        rowExp;
+
+      galaxyDiffs.push(diff);
+    }
+  });
+
+  return galaxyDiffs.reduce((prev, curr) => prev + curr, 0);
+};
+
+console.log(partTwo(input0));
