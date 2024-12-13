@@ -20,6 +20,7 @@ const LOW = "low";
 let GLOBAL_CONFIG = {};
 let GLOBAL_LOW_COUNTER = 0;
 let GLOBAL_HIGH_COUNTER = 0;
+let HIT_RX = false;
 
 const parseInput = (input) => {
   return input.split("\n").reduce((prev, row) => {
@@ -65,6 +66,11 @@ const processSignal = ({ input, destinations, signal }) => {
   const newSteps = [];
   destinations.forEach((dest) => {
     const module = GLOBAL_CONFIG[dest];
+
+    if (dest === "rx" && signal === LOW) {
+      console.log({ input, destinations, signal });
+      HIT_RX = true;
+    }
     if (!module) return;
 
     if (module.type === BROADCASTER) {
@@ -153,6 +159,23 @@ const partOne = (input) => {
   console.log(GLOBAL_LOW_COUNTER * GLOBAL_HIGH_COUNTER);
 };
 
+const partTwo = (input) => {
+  GLOBAL_CONFIG = parseInput(input);
+  populateConjunctionMemory();
+  let numPresses = 0;
+
+  // okay instead of brute forcing I think I should be able to calculate each step and then multiple together
+  for (let i = 0; i < Number.MAX_SAFE_INTEGER; i++) {
+    pushButton();
+    numPresses++;
+    if (HIT_RX === true) {
+      console.log(numPresses);
+      break;
+    }
+  }
+  printCounters();
+};
+
 // partOne(sampleInput);
 // partOne(sampleInput2);
-partOne(input);
+partTwo(input);
